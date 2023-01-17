@@ -1,25 +1,22 @@
 package A2016.Day1;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-
 public class Ex23 {
+    static char direction = 'H';
+    static String line;
+    static int distance;
+    static char tourne;
+    static String pos;
+    static boolean sortieBoucle = false;
+    //H B G D
+    static int[] tabDistance = new int[2];
+    static List<String> lstPos = new ArrayList<>();
+    static int distanceTT;
 
     public static void main(String[] args) {
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/java/A2016/Day1/Chemin.txt"))) {
-            char direction = 'H';
-            String line;
-            int distance;
-            char tourne;
-            String pos;
-            boolean sortieBoucle = false;
-            //H B G D
-            int[] tabDistance = new int[2];
-            List<String> lstPos = new ArrayList<>();
-
-            int distanceTT;
 
             while ((line = br.readLine()) != null) {
                 String chaines[] = line.split(", ");
@@ -31,57 +28,20 @@ public class Ex23 {
                         switch (direction) {
                             case 'H':
                                 direction = 'D';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[1] ++;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(1,true);
                                 break;
-
                             case 'B':
                                 direction = 'G';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[1] --;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(1,false);
                                 break;
-
                             case 'G':
                                 direction = 'H';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[0] ++;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(0,true);
                                 break;
-
                             case 'D':
                                 direction = 'B';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[0] --;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(0,false);
                                 break;
-
                             default:
                                 throw new RuntimeException("IMPOSSIBLE DIRECTION " + tourne);
                         }
@@ -89,84 +49,51 @@ public class Ex23 {
                         switch (direction) {
                             case 'H':
                                 direction = 'G';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[1] --;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
-
+                                isAlreadyGo(1,false);
                                 break;
-
                             case 'B':
                                 direction = 'D';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[1] ++;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(1,true);
                                 break;
-
                             case 'G':
                                 direction = 'B';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[0] --;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(0,false);
                                 break;
-
                             case 'D':
                                 direction = 'H';
-                                for (int i = 0; i < distance; i++) {
-                                    tabDistance[0] ++;
-                                    pos = tabDistance[0] + " - " + tabDistance[1] ;
-                                    if(lstPos.indexOf(pos) != -1) {
-                                        sortieBoucle = true;
-                                        break;
-                                    }
-                                    lstPos.add(pos);
-                                }
+                                isAlreadyGo(0,true);
                                 break;
-
                             default:
                                 throw new RuntimeException("IMPOSSIBLE DIRECTION " + tourne);
                         }
                     }
-
-
                     pos = tabDistance[0] + " - " + tabDistance[1] ;
-                    System.out.println(pos);
-
-                    
                     if(sortieBoucle) {
-
-                        System.out.println("Distance TT: " + pos );
+                        System.out.println("pos TT: " + pos );
                         break;
                     };
-
                     lstPos.add(pos);
                 }
             }
-
             distanceTT = Math.abs(tabDistance[0]) + Math.abs( tabDistance[1]);
-
             System.out.println("Distance TT: " + distanceTT);
-
         } catch (Exception e) {
             System.err.println("Erreur");
         }
-
+    }
+    private static void isAlreadyGo(int VertiHori, boolean ajout) {
+        for (int i = 0; i < distance; i++) {
+            if (ajout) {
+                tabDistance[VertiHori] ++;
+            } else {
+                tabDistance[VertiHori] --;
+            }
+            pos = tabDistance[0] + " - " + tabDistance[1] ;
+            if(lstPos.indexOf(pos) != -1) {
+                sortieBoucle = true;
+                break;
+            }
+            lstPos.add(pos);
+        }
     }
 }
